@@ -1,0 +1,6 @@
+.git/
+.vscode/
+target/
+.git*
+LICENSE
+README.md
