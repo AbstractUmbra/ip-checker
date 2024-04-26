@@ -127,6 +127,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     loop {
         get_current_ip().await?;
         println!("Finished iteration, sleeping for 5m");
-        tokio::time::sleep(std::time::Duration::from_secs(3600)).await;
+        tokio::time::sleep(std::time::Duration::from_secs(300)).await;
     }
 }
