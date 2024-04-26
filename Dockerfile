@@ -5,7 +5,7 @@ ENV APP_NAME=${APP_NAME}
 
 WORKDIR /app
 
-RUN apt-get update -y && apt-get upgrade -y && apt-get install musl-tools libssl-dev -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get upgrade -y && apt-get install musl-tools -y && rm -rf /var/lib/apt/lists/*
 
 COPY Cargo.toml Cargo.lock ./
 RUN mkdir src/ && echo "fn main() {}" > src/main.rs
