@@ -32,4 +32,4 @@ ENV ROCKET_PROFILE=release
 WORKDIR /app
 COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/$APP_NAME .
 
-CMD [ "./$APP_NAME" ]
+CMD [ "sh", "-c", "./$APP_NAME" ]
