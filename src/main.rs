@@ -1,3 +1,4 @@
+use eos::Utc;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::net::IpAddr;
@@ -16,6 +17,7 @@ struct UpdatePayload {
     content: String,
     name: String,
     r#type: String,
+    comment: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -102,6 +104,7 @@ async fn post_updated_ip(config: Config, new_ip: String) -> Result<(), Box<dyn s
         content: new_ip.clone(),
         name: "home".to_owned(),
         r#type: "A".to_owned(),
+        comment: Some(eos::DateTime::utc_now().to_string()),
     };
 
     let conf = config.clone();
