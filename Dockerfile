@@ -1,4 +1,4 @@
-FROM rust:latest as builder
+FROM rust:latest AS builder
 
 ARG APP_NAME=ip-checker
 ENV APP_NAME=${APP_NAME}
@@ -32,4 +32,4 @@ ENV ROCKET_PROFILE=release
 WORKDIR /app
 COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/$APP_NAME .
 
-CMD ./$APP_NAME
+CMD [ "./$APP_NAME" ]
