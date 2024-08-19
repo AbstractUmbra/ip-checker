@@ -15,14 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GIT_SHA: ${GITHUB_SHA::7}
-      REPO: to_be_calculated
+      REPO: abstractumbra/ip-checker
 
     steps:
-      - name: Lowercase Repo Name
-        id: lowercase-repo
-        run: |
-          echo "REPO=${GITHUB_REPOSISTORY,,}" >> ${GITHUB_ENV}
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -57,6 +52,6 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta.outputs.tags }}
-            ghcr.io/$REPO:${{ steps.slug.outputs.GIT_SHORT_SHA7 }}
-            ghcr.io/$REPO:latest
+            ghcr.io/${{ env.REPO }}:${{ steps.slug.outputs.GIT_SHORT_SHA7 }}
+            ghcr.io/${{ env.REPO }}:latest
           labels: ${{ steps.meta.outputs.labels }}
