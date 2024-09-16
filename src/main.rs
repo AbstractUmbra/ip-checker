@@ -53,9 +53,9 @@ struct UpdateResponseResult {
 #[derive(Deserialize, Debug)]
 struct UpdateResponse {
     errors: Vec<UpdateResponseMessage>,
-    messages: Vec<UpdateResponseMessage>,
+    messages: Option<Vec<UpdateResponseMessage>>,
     success: bool,
-    result: UpdateResponseResult,
+    result: Option<UpdateResponseResult>,
 }
 
 async fn get_config() -> Result<Config, serde_json::Error> {
@@ -120,9 +120,16 @@ async fn post_updated_ip(config: Config, new_ip: String) -> Result<(), Box<dyn s
         .await?
         .json::<UpdateResponse>()
         .await?;
-    println!("Pushed new IP.");
 
-    update_config(config, response.result.content).await;
+    if response.success == false {
+        println!("There were errors in this request: {:#?}", response.errors);
+        panic!("Dying here.")
+    }
+
+    match response.result {
+        Some(res) => update_config(config, res.content).await,
+        None => panic!("Somehow got into an error state"),
+    }
 
     Ok(())
 }
