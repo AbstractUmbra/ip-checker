@@ -1,0 +1,8 @@
+services:
+  ip:
+    image: ghcr.io/abstractumbra/ip-checker:latest
+    container_name: ip-checker
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json
+
