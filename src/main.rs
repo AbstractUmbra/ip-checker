@@ -7,6 +7,7 @@ use tokio::fs;
 struct Config {
     url: String,
     ip: String,
+    account_email: String,
     api_key: String,
 }
 
@@ -40,7 +41,7 @@ struct UpdateResponseResult {
     comment: Option<String>,
     created_on: String,
     id: String,
-    locked: bool,
+    locked: Option<bool>,
     meta: Option<UpdateResponseResultMeta>,
     modified_on: String,
     proxiable: bool,
@@ -106,6 +107,7 @@ async fn post_updated_ip(config: Config, new_ip: String) -> Result<(), Box<dyn s
         name: "home".to_owned(),
         r#type: "A".to_owned(),
         comment: Some(eos::DateTime::utc_now().to_string()),
+        proxied: Some(true),
         ..Default::default()
     };
 
