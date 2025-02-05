@@ -7,7 +7,6 @@ use tokio::fs;
 struct Config {
     url: String,
     ip: String,
-    account_email: String,
     api_key: String,
 }
 
@@ -48,7 +47,6 @@ struct UpdateResponseResult {
     tags: Option<Vec<String>>,
     ttl: Option<u64>,
     zone_id: Option<String>,
-    zone_name: String,
 }
 
 #[derive(Deserialize, Debug)]
