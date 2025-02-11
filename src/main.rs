@@ -3,14 +3,14 @@ use std::net::IpAddr;
 use std::path::PathBuf;
 use tokio::fs;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 struct Config {
     url: String,
     ip: String,
     api_key: String,
 }
 
-#[derive(Serialize, Debug, Clone, Default)]
+#[derive(Serialize, Clone, Default)]
 struct UpdatePayload {
     content: String,
     name: String,
@@ -22,16 +22,19 @@ struct UpdatePayload {
 }
 
 #[derive(Deserialize, Debug)]
+#[allow(dead_code)]
 struct UpdateResponseMessage {
     code: u64,
     message: String,
 }
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
+#[allow(dead_code)]
 struct UpdateResponseResultMeta {
     auto_added: Option<bool>,
     source: Option<String>,
 }
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
+#[allow(dead_code)]
 struct UpdateResponseResult {
     content: String,
     name: String,
@@ -49,7 +52,8 @@ struct UpdateResponseResult {
     zone_id: Option<String>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
+#[allow(dead_code)]
 struct UpdateResponse {
     errors: Vec<UpdateResponseMessage>,
     messages: Option<Vec<UpdateResponseMessage>>,
@@ -121,7 +125,7 @@ async fn post_updated_ip(config: Config, new_ip: String) -> Result<(), Box<dyn s
         .json::<UpdateResponse>()
         .await?;
 
-    if response.success == false {
+    if !response.success {
         println!("There were errors in this request: {:#?}", response.errors);
         panic!("Dying here.")
     }
