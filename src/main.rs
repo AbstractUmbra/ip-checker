@@ -3,6 +3,10 @@ use std::net::IpAddr;
 use std::path::PathBuf;
 use tokio::fs;
 
+#[derive(Deserialize)]
+struct IPResponsePayload {
+    ip: String,
+}
 #[derive(Serialize, Deserialize, Clone)]
 struct Config {
     url: String,
@@ -84,20 +88,20 @@ async fn get_current_ip() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("Attempting bind.");
 
-    let current_ip = reqwest::Client::builder()
+    let resp = reqwest::Client::builder()
         .local_address(IpAddr::from([0, 0, 0, 0]))
         .build()?
-        .get("https://ifconfig.me")
+        .get("https://api.ipify.org?format=json")
         .send()
         .await?
-        .text()
+        .json::<IPResponsePayload>()
         .await?;
 
-    if config.ip == current_ip {
+    if config.ip == resp.ip {
         println!("No change.");
         Ok(())
     } else {
-        post_updated_ip(config, current_ip).await
+        post_updated_ip(config, resp.ip).await
     }
 }
 
