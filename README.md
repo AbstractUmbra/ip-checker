@@ -8,3 +8,5 @@ This means that anything that I proxy behind cloudflare to reach my home can oft
 This utility will fetch my current IPv4 address and update my Cloudflare A record for home as needed.
 
 It checks every 5 minutes.
+
+If you want to run it yourself you can look at the [example config](./config.example.json) file and update with the necessary values.
