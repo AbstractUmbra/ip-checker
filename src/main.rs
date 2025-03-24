@@ -1,69 +1,8 @@
-use serde::{Deserialize, Serialize};
+mod models;
+use crate::models::serde::{Config, IPResponsePayload, UpdatePayload, UpdateResponse};
 use std::net::IpAddr;
 use std::path::PathBuf;
 use tokio::fs;
-
-#[derive(Deserialize)]
-struct IPResponsePayload {
-    ip: String,
-}
-#[derive(Serialize, Deserialize, Clone)]
-struct Config {
-    url: String,
-    ip: String,
-    api_key: String,
-}
-
-#[derive(Serialize, Clone, Default)]
-struct UpdatePayload {
-    content: String,
-    name: String,
-    proxied: Option<bool>,
-    r#type: String,
-    comment: Option<String>,
-    tags: Option<Vec<String>>,
-    ttl: Option<i16>,
-}
-
-#[derive(Deserialize, Debug)]
-#[allow(dead_code)]
-struct UpdateResponseMessage {
-    code: u64,
-    message: String,
-}
-#[derive(Deserialize)]
-#[allow(dead_code)]
-struct UpdateResponseResultMeta {
-    auto_added: Option<bool>,
-    source: Option<String>,
-}
-#[derive(Deserialize)]
-#[allow(dead_code)]
-struct UpdateResponseResult {
-    content: String,
-    name: String,
-    proxied: Option<bool>,
-    r#type: String,
-    comment: Option<String>,
-    created_on: String,
-    id: String,
-    locked: Option<bool>,
-    meta: Option<UpdateResponseResultMeta>,
-    modified_on: String,
-    proxiable: bool,
-    tags: Option<Vec<String>>,
-    ttl: Option<u64>,
-    zone_id: Option<String>,
-}
-
-#[derive(Deserialize)]
-#[allow(dead_code)]
-struct UpdateResponse {
-    errors: Vec<UpdateResponseMessage>,
-    messages: Option<Vec<UpdateResponseMessage>>,
-    success: bool,
-    result: Option<UpdateResponseResult>,
-}
 
 async fn get_config() -> Result<Config, serde_json::Error> {
     let path = PathBuf::from("./config.json");
