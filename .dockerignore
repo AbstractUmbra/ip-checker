@@ -1,6 +1,11 @@
 .git/
+.github/
 .vscode/
 target/
 .git*
 LICENSE
 README.md
+config.example.json
+Dockerfile
+docker-compose.yaml
+compose.override.yaml
