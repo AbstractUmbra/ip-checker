@@ -4,6 +4,10 @@ use std::net::IpAddr;
 use std::path::PathBuf;
 use tokio::fs;
 
+fn flush_stdout() {
+    print!("{esc}[2J{esc}[1;1H", esc = 27 as char)
+}
+
 async fn get_config() -> Result<Config, serde_json::Error> {
     let path = PathBuf::from("./config.json");
     let contents = fs::read_to_string(path).await.expect("File is corrupt");
@@ -25,7 +29,12 @@ async fn update_config(mut config: Config, new_ip: String) {
 async fn get_current_ip() -> Result<(), Box<dyn std::error::Error>> {
     let config = get_config().await?;
 
-    println!("Attempting bind.");
+    flush_stdout();
+
+    println!(
+        "Attempting bind at {}.",
+        eos::DateTime::utc_now().to_rfc3339()
+    );
 
     let resp = reqwest::Client::builder()
         .local_address(IpAddr::from([0, 0, 0, 0]))
@@ -59,24 +68,23 @@ async fn post_updated_ip(config: Config, new_ip: String) -> Result<(), Box<dyn s
     let conf = config.clone();
 
     println!("Pushing new IP.");
-    let response = reqwest::Client::new()
-        .patch(conf.url)
-        .header("Authorization", format!("Bearer {}", conf.api_key))
-        .json::<UpdatePayload>(&json_payload)
-        .send()
-        .await?
-        .json::<UpdateResponse>()
-        .await?;
+    for url in conf.urls {
+        let response = reqwest::Client::new()
+            .patch(url)
+            .header("Authorization", format!("Bearer {}", conf.api_key))
+            .json::<UpdatePayload>(&json_payload)
+            .send()
+            .await?
+            .json::<UpdateResponse>()
+            .await?;
 
-    if !response.success {
-        println!("There were errors in this request: {:#?}", response.errors);
-        panic!("Dying here.")
+        if !response.success {
+            println!("There were errors in this request: {:#?}", response.errors);
+            panic!("Dying here.")
+        }
     }
 
-    match response.result {
-        Some(res) => update_config(config, res.content).await,
-        None => panic!("Somehow got into an error state"),
-    }
+    update_config(config, new_ip).await;
 
     Ok(())
 }

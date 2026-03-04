@@ -6,7 +6,7 @@ pub(crate) struct IPResponsePayload {
 }
 #[derive(Serialize, Deserialize, Clone)]
 pub(crate) struct Config {
-    pub(crate) url: String,
+    pub(crate) urls: Vec<String>,
     pub(crate) ip: String,
     pub(crate) api_key: String,
 }
